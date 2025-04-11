@@ -1,25 +1,23 @@
-
 <?php
-session_start(); 
-
-if (!isset($_SESSION['userId']))
-{
-  echo "<script type = \"text/javascript\">
-  window.location = (\"../index.php\");
-  </script>";
-
+// Start session cleanly
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-// $expiry = 1800 ;//session expiry required after 30 mins
-// if (isset($_SESSION['LAST']) && (time() - $_SESSION['LAST'] > $expiry)) {
+// Check if user is logged in
+if (!isset($_SESSION['userId'])) {
+    header("Location: ../index.php");
+    exit();
+}
 
-//     session_unset();
-//     session_destroy();
-//     echo "<script type = \"text/javascript\">
-//           window.location = (\"../index.php\");
-//           </script>";
+// Optional: Auto-logout after 30 minutes of inactivity
+$expiry = 1800; // 30 minutes
+if (isset($_SESSION['LAST']) && (time() - $_SESSION['LAST'] > $expiry)) {
+    session_unset();
+    session_destroy();
+    header("Location: ../index.php");
+    exit();
+}
 
-// }
-// $_SESSION['LAST'] = time();
-    
+$_SESSION['LAST'] = time();
 ?>

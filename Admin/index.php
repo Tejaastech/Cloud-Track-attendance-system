@@ -1,7 +1,9 @@
-
 <?php 
-include '../Includes/dbcon.php';
-include '../Includes/session.php';
+//include '../Includes/dbcon.php';
+//include '../Includes/session.php';
+ob_start();
+include __DIR__ . '/../Includes/dbcon.php';
+include __DIR__ . '/../Includes/session.php';
 
 
     $query = "SELECT tblclass.className,tblclassarms.classArmName 
@@ -241,7 +243,7 @@ $totAttendance = mysqli_num_rows($query1);
         <!---Container Fluid-->
       </div>
       <!-- Footer -->
-      <?php include 'includes/footer.php';?>
+      <?php include('../Includes/footer.php');?>
       <!-- Footer -->
     </div>
   </div>
