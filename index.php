@@ -66,78 +66,74 @@ session_start();
 
                                     <?php
 
-  if(isset($_POST['login'])){
+<?php
+ob_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+include 'Includes/dbcon.php';
 
+if (isset($_POST['login'])) {
     $userType = $_POST['userType'];
     $username = $_POST['username'];
-    $password = $_POST['password'];
-    $password = md5($password);
+    $password = md5($_POST['password']);
 
-    if($userType == "Administrator"){
+    if ($userType == "Administrator") {
+        $query = "SELECT * FROM tbladmin WHERE emailAddress = '$username' AND password = '$password'";
+        $rs = $conn->query($query);
 
-      $query = "SELECT * FROM tbladmin WHERE emailAddress = '$username' AND password = '$password'";
-      $rs = $conn->query($query);
-      $num = $rs->num_rows;
-      $rows = $rs->fetch_assoc();
+        if (!$rs) {
+            die("Database query failed: " . $conn->error);
+        }
 
-      if($num > 0){
+        $num = $rs->num_rows;
 
-        $_SESSION['userId'] = $rows['Id'];
-        $_SESSION['firstName'] = $rows['firstName'];
-        $_SESSION['lastName'] = $rows['lastName'];
-        $_SESSION['emailAddress'] = $rows['emailAddress'];
+        if ($num > 0) {
+            $rows = $rs->fetch_assoc();
+            $_SESSION['userId'] = $rows['Id'];
+            $_SESSION['firstName'] = $rows['firstName'];
+            $_SESSION['lastName'] = $rows['lastName'];
+            $_SESSION['emailAddress'] = $rows['emailAddress'];
 
-        echo "<script type = \"text/javascript\">
-        window.location = (\"Admin/index.php\")
-        </script>";
-      }
-
-      else{
-
-        echo "<div class='alert alert-danger' role='alert'>
-        Invalid Username/Password!
-        </div>";
-
-      }
+            header("Location: Admin/index.php");
+            exit();
+        } else {
+            echo "<div class='alert alert-danger'>Invalid username or password (Admin)</div>";
+        }
     }
-    else if($userType == "ClassTeacher"){
 
-      $query = "SELECT * FROM tblclassteacher WHERE emailAddress = '$username' AND password = '$password'";
-      $rs = $conn->query($query);
-      $num = $rs->num_rows;
-      $rows = $rs->fetch_assoc();
+    else if ($userType == "ClassTeacher") {
+        $query = "SELECT * FROM tblclassteacher WHERE emailAddress = '$username' AND password = '$password'";
+        $rs = $conn->query($query);
 
-      if($num > 0){
+        if (!$rs) {
+            die("Database query failed: " . $conn->error);
+        }
 
-        $_SESSION['userId'] = $rows['Id'];
-        $_SESSION['firstName'] = $rows['firstName'];
-        $_SESSION['lastName'] = $rows['lastName'];
-        $_SESSION['emailAddress'] = $rows['emailAddress'];
-        $_SESSION['classId'] = $rows['classId'];
-        $_SESSION['classArmId'] = $rows['classArmId'];
+        $num = $rs->num_rows;
 
-        echo "<script type = \"text/javascript\">
-        window.location = (\"ClassTeacher/index.php\")
-        </script>";
-      }
+        if ($num > 0) {
+            $rows = $rs->fetch_assoc();
+            $_SESSION['userId'] = $rows['Id'];
+            $_SESSION['firstName'] = $rows['firstName'];
+            $_SESSION['lastName'] = $rows['lastName'];
+            $_SESSION['emailAddress'] = $rows['emailAddress'];
+            $_SESSION['classId'] = $rows['classId'];
+            $_SESSION['classArmId'] = $rows['classArmId'];
 
-      else{
-
-        echo "<div class='alert alert-danger' role='alert'>
-        Invalid Username/Password!
-        </div>";
-
-      }
+            header("Location: ClassTeacher/index.php");
+            exit();
+        } else {
+            echo "<div class='alert alert-danger'>Invalid username or password (ClassTeacher)</div>";
+        }
     }
-    else{
 
-        echo "<div class='alert alert-danger' role='alert'>
-        Invalid Username/Password!
-        </div>";
-
+    else {
+        echo "<div class='alert alert-danger'>Please select a user role</div>";
     }
 }
 ?>
+
 
                                     <!-- <hr>
                     <a href="index.html" class="btn btn-google btn-block">
