@@ -1,0 +1,21 @@
+runtime: php81
+
+entrypoint: serve handler.php
+
+handlers:
+  - url: /.*\.php$
+    script: auto
+
+  - url: /(.*\.(css|js|png|jpg|jpeg|gif|ico|svg))
+    static_files: \1
+    upload: (.*\.(css|js|png|jpg|jpeg|gif|ico|svg))
+
+  - url: /.*
+    #script: handler.php
+    script: index.php
+
+env_variables:
+  CLOUDSQL_USER: root
+  CLOUDSQL_PASSWORD: ""  # Add your Cloud SQL password if it is set
+  CLOUDSQL_DB: attendancemsystem01
+  CLOUDSQL_CONNECTION_NAME: cloud-track-attendance-system:us-central1:attendancemsystem01
